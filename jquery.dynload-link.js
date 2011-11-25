@@ -14,7 +14,15 @@
 	$.dynload_link = {};
 	$.dynload_link.init = function () {
 		$.dynload_link.current_url = $.dynload_link.parseUri(document.location.href);
+		if ($.dynload_link.init_done) return;
+
+		$.dynload_link.initialState.url = $.dynload_link.current_url;
+		$.dynload_link.initialState.title = document.title;
+		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
+		$.dynload_link.init_done = true;
+		$.dynload_link.all();
 	};
+	$(document).ready($.dynload_link.init);
 	$.dynload_link.initialState = {};
 	$.dynload_link.page_cache = {};
 
@@ -123,6 +131,8 @@
 	};
 
 	$(window).bind( 'popstate', function (e) {
+		if (!$.dynload_link.init_done) return;
+
 		var state = e.originalEvent.state;
 		if (!state) state = $.dynload_link.initialState;
 		$.dynload_link.applyData(state.url);
@@ -158,13 +168,5 @@
 	$.dynload_link.pageChange = function (func) {
 		$.dynload_link.pageChange_funcs.push(func);
 	};
-
-	$(document).ready(function () {
-		$.dynload_link.init();
-		$.dynload_link.initialState.url = $.dynload_link.current_url;
-		$.dynload_link.initialState.title = document.title;
-		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
-		$.dynload_link.all();
-	});
 
 })( jQuery );
