@@ -3,11 +3,9 @@
    --------------------------------------
    > This jQuery plugin allows reloadless surfing within a website.
 
-   Author: Seon-Wook Park
-   Site: http://www.swook.net/
-
-   Thanks to:
-   - Steven Levithan (http://blog.stevenlevithan.com/archives/parseuri)
+   Author:  Seon-Wook Park
+   Site:    http://www.swook.net/
+   License: MIT License <http://www.opensource.org/licenses/mit-license.php>
  */
 
 (function( $ ) {
