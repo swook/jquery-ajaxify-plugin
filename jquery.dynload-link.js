@@ -65,7 +65,7 @@
 		}
 		uri.full = uri.protocol+'://'+uri.host+((uri.port == '') ? '' : ':'+uri.port)+
 					((uri.path == '') ? '/' : uri.path)+
-					((uri.query == '') ? '?' : uri.query);
+					((uri.query == '') ? '' : '?'+uri.query)
 		uri.full_anchor = uri.full;
 		if ( uri.anchor > '' ) uri.full_anchor += '#'+uri.anchor;
 		return uri;
