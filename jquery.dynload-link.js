@@ -79,8 +79,7 @@
 		if (url.host != current_url.host) return;
 		elem.data('url', url);
 		elem.click(function(e) {
-			if ($.browser.msie && e.button == 4 ||
-				!$.browser.msie && e.button == 2 )
+			if (($.browser.msie && e.button == 4) || (!$.browser.msie && e.button == 2))
 				return;
 
 			e.preventDefault();
