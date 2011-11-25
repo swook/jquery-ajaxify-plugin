@@ -107,11 +107,7 @@
 		document.title  = data.match(/<title>(.*?)<\/title>/)[1];
 		$.dynload_link.all();
 		$.dynload_link.gotoAnchor(url.anchor);
-
-		var len = $.dynload_link.pageChange_funcs.length;
-		for (var i = 0; i < len; i++) {
-			$.dynload_link.pageChange_funcs[i](url);
-		}
+		$.dynload_link.changePage_run();
 	};
 
 	$.dynload_link.updateWindow = function (url) {
@@ -152,6 +148,12 @@
 		});
 	};
 
+	$.dynload_link.pageChange_run = function () {
+		var len = $.dynload_link.pageChange_funcs.length;
+		for (var i = 0; i < len; i++) {
+			$.dynload_link.pageChange_funcs[i](url);
+		}
+	};
 	$.dynload_link.pageChange_funcs = [];
 	$.dynload_link.pageChange = function (func) {
 		$.dynload_link.pageChange_funcs.push(func);
@@ -163,6 +165,7 @@
 		$.dynload_link.initialState.title = document.title;
 		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
 		$.dynload_link.all();
+		$.dynload_link.pageChange_run();
 	});
 
 })( jQuery );
