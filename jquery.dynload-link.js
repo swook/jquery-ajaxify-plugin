@@ -152,8 +152,9 @@
 			anchor = anchor.offset().top;
 		}
 
-		if ( $('html body').scrollTop() != anchor )
-			$('html body').animate({ scrollTop: anchor }, 'fast');
+		var page = $("body,html,document");
+		if ( page.scrollTop() != anchor )
+			page.animate({ scrollTop: anchor }, 'fast');
 	};
 
 	$.dynload_link.all = function () {
