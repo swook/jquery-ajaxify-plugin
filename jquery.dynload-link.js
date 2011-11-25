@@ -152,8 +152,11 @@
 			anchor = anchor.offset().top;
 		}
 
-		var page = $("body,html,document");
-		if ( page.scrollTop() != anchor )
+		var page;
+		if ($.browser.webkit) page = $('body');
+		else page = $('html,body');
+
+		if (page.scrollTop() != anchor)
 			page.animate({ scrollTop: anchor }, 'fast');
 	};
 
