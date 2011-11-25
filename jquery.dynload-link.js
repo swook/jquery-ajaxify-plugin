@@ -79,6 +79,10 @@
 		if (url.host != current_url.host) return;
 		elem.data('url', url);
 		elem.click(function(e) {
+			if ($.browser.msie && e.button == 4 ||
+				!$.browser.msie && e.button == 2 )
+				return;
+
 			e.preventDefault();
 			var url = $(this).data('url');
 			if ($.dynload_link.current_url.full == url.full) {
