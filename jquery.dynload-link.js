@@ -134,7 +134,6 @@
 	});
 
 	$.dynload_link.gotoAnchor = function (anchor) {
-		console.log(anchor);
 		if (anchor == '')
 			anchor = 0;
 		else {
@@ -142,7 +141,6 @@
 			if (anchor.length == 0) return;
 			anchor = anchor.offset().top;
 		}
-		console.log(anchor);
 
 		if ( $('html body').scrollTop() != anchor )
 			$('html body').animate({ scrollTop: anchor }, 'fast');
@@ -165,6 +163,6 @@
 		$.dynload_link.initialState.title = document.title;
 		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
 		$.dynload_link.all();
-	}
+	});
 
 })( jQuery );
