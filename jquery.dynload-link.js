@@ -115,8 +115,8 @@
 		}
 		document.title  = data.match(/<title>(.*?)<\/title>/)[1];
 		$.dynload_link.all();
-		$.dynload_link.gotoAnchor(url.anchor);
 		$.dynload_link.pageChange_run();
+		$.dynload_link.gotoAnchor(url.anchor);
 	};
 
 	$.dynload_link.updateWindow = function (url) {
