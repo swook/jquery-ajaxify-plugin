@@ -129,7 +129,10 @@
 	};
 
 	$(window).bind( 'popstate', function (e) {
-		if (!$.dynload_link.init_done) return;
+		if (!$.dynload_link.init_pop) {
+			$.dynload_link.init_pop = true;
+			return;
+		}
 
 		var state = e.originalEvent.state;
 		if (!state) state = $.dynload_link.initialState;
