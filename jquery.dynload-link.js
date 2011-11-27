@@ -92,7 +92,7 @@
 
 			$.get(url.full, function(data) {
 				$.dynload_link.page_cache[url.full] = data;
-				$.dynload_link.updateWindow(url);
+				$.dynload_link.updateHistory(url);
 				$.dynload_link.applyData(url);
 			}, 'html');
 		});
@@ -100,9 +100,15 @@
 
 	$.dynload_link.applyData = function (url) {
 		var data = $.dynload_link.page_cache[url.full];
-		document.title  = data.match(/<title>(.*?)<\/title>/)[1];
-		if ( !$.dynload_link.container )
-			$('html body').html(data);
+		if (!data) {
+			$.get(url.full, function(data) {
+				$.dynload_link.page_cache[url.full] = data;
+				$.dynload_link.applyData(url);
+			}, 'html');
+			return;
+		}
+		if (!$.dynload_link.container)
+			$('html').html(data);
 		else {
 			if (typeof $.dynload_link.container == 'string')
 				$.dynload_link.container = [$.dynload_link.container];
@@ -116,19 +122,22 @@
 			}
 		}
 		$.dynload_link.all();
-		$.dynload_link.pageChange_run();
+ 		$.dynload_link.pageChange_run();
 		$.dynload_link.gotoAnchor(url.anchor);
 	};
 
-	$.dynload_link.updateWindow = function (url) {
+	$.dynload_link.updateHistory = function (url) {
+		var data = $.dynload_link.page_cache[url.full];
+		var title  = data.match(/<title>(.*?)<\/title>/)[1];
 		history.pushState(
 			{
 				url: url,
-				title: document.title,
+				title: title
 			},
-			document.title,
+			title,
 			url.relative
 		);
+		document.title = title;
 		$.dynload_link.init();
 	};
 
@@ -168,16 +177,16 @@
 
 	$(document).ready($.dynload_link.init);
 
-	$(window).bind( 'popstate', function (e) {
+	$(window).bind('popstate', function (e) {
 		if ($.browser.webkit && !$.dynload_link.init_pop) {
 			$.dynload_link.init_pop = true;
 			return;
 		}
 
 		var state = e.originalEvent.state;
+		console.log(state);
 		if (!state) state = $.dynload_link.initialState;
 		$.dynload_link.applyData(state.url);
 		$.dynload_link.init();
 	});
-
 })( jQuery );
