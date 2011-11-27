@@ -20,6 +20,7 @@
 		$.dynload_link.init_done = true;
 		$.dynload_link.all();
 	};
+	$(document).ready($.dynload_link.init);
 	$.dynload_link.initialState = {};
 	$.dynload_link.page_cache = {};
 
@@ -131,6 +132,18 @@
 		$.dynload_link.init();
 	};
 
+	$(window).bind( 'popstate', function (e) {
+		if (!$.dynload_link.init_pop) {
+			$.dynload_link.init_pop = true;
+			return;
+		}
+
+		var state = e.originalEvent.state;
+		if (!state) state = $.dynload_link.initialState;
+		$.dynload_link.applyData(state.url);
+		$.dynload_link.init();
+	});
+
 	$.dynload_link.gotoAnchor = function (anchor) {
 		if (anchor == '')
 			anchor = 0;
@@ -165,17 +178,4 @@
 		$.dynload_link.pageChange_funcs.push(func);
 	};
 
-	$(document).ready($.dynload_link.init);
-
-	$(window).bind('popstate', function (e) {
-		if (!$.dynload_link.init_pop) {
-			$.dynload_link.init_pop = true;
-			return;
-		}
-
-		var state = e.originalEvent.state;
-		if (!state) state = $.dynload_link.initialState;
-		$.dynload_link.applyData(state.url);
-		$.dynload_link.init();
-	});
 })( jQuery );
