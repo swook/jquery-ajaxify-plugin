@@ -76,7 +76,7 @@
 		elem.unbind('click');
 
 		var url = $.dynload_link.parseUri(elem.attr('href'));
-		if (url.host != $.dynload_link.current_url.host) return;
+		if (url.host != current_url.host) return;
 		elem.data('url', url);
 		elem.click(function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
@@ -102,22 +102,16 @@
 		if ( !$.dynload_link.container )
 			$('html body').html(data);
 		else {
-			$('body').append($('<iframe id="dynload-link-tmp"/>'));
-			var ifr = $('iframe[id="dynload-link-tmp"]');
-			ifr.hide().html(data);
-			var idata = ifr.contents();
-
 			if (typeof $.dynload_link.container == 'string')
 				$.dynload_link.container = [$.dynload_link.container];
 			var cont, newdata, len = $.dynload_link.container.length;
 			for (var i = 0; i < len; i++) {
-				newdata = $($.dynload_link.container[i]+':first', idata)
+				newdata = $($.dynload_link.container[i]+':first', data)
 				cont = $($.dynload_link.container[i]+':first');
 				cont.replaceWith(newdata);
 				cont.height(cont.height());
 				cont.height('auto');
 			}
-			ifr.remove();
 		}
 		document.title  = data.match(/<title>(.*?)<\/title>/)[1];
 		$.dynload_link.all();
@@ -156,7 +150,7 @@
 
 	$.dynload_link.all = function () {
 		$('a[target!=_blank]').each( function() {
-			$.dynload_link.applyTo($(this));
+			$.dynload_link.applyTo($(this), $.dynload_link.current_url);
 		});
 	};
 
@@ -173,7 +167,7 @@
 
 	$(document).ready($.dynload_link.init);
 
-	$(window).bind( 'popstate', function (e) {
+	$(window).bind('popstate', function (e) {
 		if (!$.dynload_link.init_pop) {
 			$.dynload_link.init_pop = true;
 			return;
