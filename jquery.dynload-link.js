@@ -184,9 +184,10 @@
 		}
 
 		var state = e.originalEvent.state;
-		console.log(state);
 		if (!state) state = $.dynload_link.initialState;
-		$.dynload_link.applyData(state.url);
-		$.dynload_link.init();
+		if (state.url.full != $.dynload_link.current_url.full) {
+			$.dynload_link.applyData(state.url);
+			$.dynload_link.init();
+		}
 	});
 })( jQuery );
