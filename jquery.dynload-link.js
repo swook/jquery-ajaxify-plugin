@@ -16,6 +16,7 @@
 
 		$.dynload_link.initialState.url = $.dynload_link.current_url;
 		$.dynload_link.initialState.title = document.title;
+		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
 		$.dynload_link.init_done = true;
 		$.dynload_link.all();
 	};
@@ -92,8 +93,6 @@
 			$.dynload_link.gotoAnchor(url.anchor);
 			return;
 		}
-
-		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
 
 		$.get(url.full, function(data) {
 			$.dynload_link.page_cache[url.full] = data;
