@@ -189,8 +189,9 @@
 		var state = e.originalEvent.state;
 		if (!state) state = $.dynload_link.initialState;
 		if (state.url.full != $.dynload_link.current_url.full) {
-			$.dynload_link.applyData(state.url);
+			document.title = state.title;
 			$.dynload_link.init();
+			$.dynload_link.applyData(state.url);
 		}
 	});
 })( jQuery );
