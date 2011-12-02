@@ -69,33 +69,37 @@
 		return uri;
 	};
 
-	$.dynload_link.applyTo = function (elem, current_url) {
+	$.dynload_link.applyTo = function (elem) {
 		var events = $.data(elem.get(0), 'events');
 		if (events && !elem.data('url') && events.click) return;
 		elem.unbind('click');
 
 		var url = $.dynload_link.parseUri(elem.attr('href'));
-		if (url.host != current_url.host) return;
+		if (url.host != $.dynload_link.current_url.host) return;
 		elem.data('url', url);
 		elem.click(function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
 				return;
 
 			e.preventDefault();
-			var url = $(this).data('url');
-			if ($.dynload_link.current_url.full == url.full) {
-				$.dynload_link.gotoAnchor(url.anchor);
-				return;
-			}
-
-			$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
-
-			$.get(url.full, function(data) {
-				$.dynload_link.page_cache[url.full] = data;
-				$.dynload_link.updateHistory(url);
-				$.dynload_link.applyData(url);
-			}, 'html');
+			$.dynload_link.loadURL($(this).data('url'));
 		});
+	};
+
+	$.dynload_link.loadURL = function (url) {
+		if (url.host != $.dynload_link.current_url.host) return;
+		if ($.dynload_link.current_url.full == url.full) {
+			$.dynload_link.gotoAnchor(url.anchor);
+			return;
+		}
+
+		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
+
+		$.get(url.full, function(data) {
+			$.dynload_link.page_cache[url.full] = data;
+			$.dynload_link.updateHistory(url);
+			$.dynload_link.applyData(url);
+		}, 'html');
 	};
 
 	$.dynload_link.applyData = function (url) {
@@ -160,7 +164,7 @@
 
 	$.dynload_link.all = function () {
 		$('a[target!=_blank]').each( function() {
-			$.dynload_link.applyTo($(this), $.dynload_link.current_url);
+			$.dynload_link.applyTo($(this));
 		});
 	};
 
