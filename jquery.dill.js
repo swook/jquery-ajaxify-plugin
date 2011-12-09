@@ -1,5 +1,5 @@
 /*
-   jQuery Dynamic Loader for Links Plugin
+   jQuery Dynamic Internal Links Loader (DILL) Plugin
    --------------------------------------
    > This jQuery plugin allows reloadless surfing within a website.
 
@@ -9,25 +9,25 @@
  */
 
 (function( $ ) {
-	$.dynload_link = {};
-	$.dynload_link.init = function () {
-		$.dynload_link.current_url = $.dynload_link.parseUri(document.location.href);
-		if ($.dynload_link.init_done) return;
+	$.Dill = {};
+	$.Dill.init = function () {
+		$.Dill.current_url = $.Dill.parseUri(document.location.href);
+		if ($.Dill.init_done) return;
 
-		$.dynload_link.initialState.url = $.dynload_link.current_url;
-		$.dynload_link.initialState.title = document.title;
-		$.dynload_link.page_cache[$.dynload_link.current_url.full] = $('html').html();
-		$.dynload_link.init_done = true;
-		$.dynload_link.all();
+		$.Dill.initialState.url = $.Dill.current_url;
+		$.Dill.initialState.title = document.title;
+		$.Dill.page_cache[$.Dill.current_url.full] = $('html').html();
+		$.Dill.init_done = true;
+		$.Dill.all();
 	};
-	$.dynload_link.initialState = {};
-	$.dynload_link.page_cache = {};
+	$.Dill.initialState = {};
+	$.Dill.page_cache = {};
 
 	// Modified function from:
 	//     http://blog.stevenlevithan.com/archives/parseuri
 	//
 	// License: MIT License <http://www.opensource.org/licenses/mit-license.php>
-	$.dynload_link.parseUri = function (str) {
+	$.Dill.parseUri = function (str) {
 		var o = {
 			strictMode: false,
 			key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
@@ -51,15 +51,15 @@
 			if ($1) uri[o.q.name][$1] = $2;
 		});
 
-		if ($.dynload_link.current_url) {
+		if ($.Dill.current_url) {
 			if ( uri.host == '' ) {
 				uri.protocol = (uri.protocol != '') ? uri.protocol :
-							(($.dynload_link.current_url.protocol == '') ? 'http' : $.dynload_link.current_url.protocol);
-				uri.host = $.dynload_link.current_url.host;
+							(($.Dill.current_url.protocol == '') ? 'http' : $.Dill.current_url.protocol);
+				uri.host = $.Dill.current_url.host;
 				uri.port = (uri.port != '') ? uri.port :
-						(($.dynload_link.current_url.port == '') ? '' : $.dynload_link.current_url.port);
+						(($.Dill.current_url.port == '') ? '' : $.Dill.current_url.port);
 				uri.path = (uri.path != '') ? uri.path :
-						(($.dynload_link.current_url.path == '') ? '' : $.dynload_link.current_url.path);
+						(($.Dill.current_url.path == '') ? '' : $.Dill.current_url.path);
 			}
 		}
 		uri.full = uri.protocol+'://'+uri.host+((uri.port == '') ? '' : ':'+uri.port)+
@@ -70,67 +70,67 @@
 		return uri;
 	};
 
-	$.dynload_link.applyTo = function () {
+	$.Dill.applyTo = function () {
 		var events = $.data($(this).get(0), 'events');
 		if (events && !$(this).data('url') && events.click) return;
 		$(this).unbind('click');
 
-		var url = $.dynload_link.parseUri($(this).attr('href'));
-		if (url.host != $.dynload_link.current_url.host) return;
+		var url = $.Dill.parseUri($(this).attr('href'));
+		if (url.host != $.Dill.current_url.host) return;
 		$(this).data('url', url);
 		$(this).click(function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
 				return;
 
 			e.preventDefault();
-			$.dynload_link.loadURL($(this).data('url'));
+			$.Dill.loadURL($(this).data('url'));
 		});
 	};
 
-	$.dynload_link.loadURL = function (url) {
-		if (url.host != $.dynload_link.current_url.host) return;
-		if ($.dynload_link.current_url.full == url.full) {
-			$.dynload_link.gotoAnchor(url.anchor);
+	$.Dill.loadURL = function (url) {
+		if (url.host != $.Dill.current_url.host) return;
+		if ($.Dill.current_url.full == url.full) {
+			$.Dill.gotoAnchor(url.anchor);
 			return;
 		}
 
 		$.get(url.full, function(data) {
-			$.dynload_link.page_cache[url.full] = data;
-			$.dynload_link.updateHistory(url);
-			$.dynload_link.applyData(url);
+			$.Dill.page_cache[url.full] = data;
+			$.Dill.updateHistory(url);
+			$.Dill.applyData(url);
 		}, 'html');
 	};
 
-	$.dynload_link.applyData = function (url) {
-		var data = $.dynload_link.page_cache[url.full];
+	$.Dill.applyData = function (url) {
+		var data = $.Dill.page_cache[url.full];
 		if (!data) {
 			$.get(url.full, function(data) {
-				$.dynload_link.page_cache[url.full] = data;
-				$.dynload_link.applyData(url);
+				$.Dill.page_cache[url.full] = data;
+				$.Dill.applyData(url);
 			}, 'html');
 			return;
 		}
-		if (!$.dynload_link.container)
+		if (!$.Dill.container)
 			$('html').html(data);
 		else {
-			if (typeof $.dynload_link.container == 'string')
-				$.dynload_link.container = [$.dynload_link.container];
-			var cont, newdata, len = $.dynload_link.container.length;
+			if (typeof $.Dill.container == 'string')
+				$.Dill.container = [$.Dill.container];
+			var cont, newdata, len = $.Dill.container.length;
 			for (var i = 0; i < len; i++) {
-				newdata = $($.dynload_link.container[i]+':first', data)
-				cont = $($.dynload_link.container[i]+':first');
+				newdata = $($.Dill.container[i]+':first', data)
+				cont = $($.Dill.container[i]+':first');
 				cont.replaceWith(newdata);
 				cont.height(cont.height());
 				cont.height('auto');
 			}
 		}
-		$.dynload_link.all();
- 		$.dynload_link.pageChange_run();
-		$.dynload_link.gotoAnchor(url.anchor);
+		$.Dill.all();
+ 		$.Dill.pageChange_run();
+		$.Dill.gotoAnchor(url.anchor);
 	};
 
-	$.dynload_link.updateHistory = function (url) {
-		var data = $.dynload_link.page_cache[url.full];
+	$.Dill.updateHistory = function (url) {
+		var data = $.Dill.page_cache[url.full];
 		var title  = data.match(/<title>(.*?)<\/title>/)[1];
 		history.pushState(
 			{
@@ -141,10 +141,10 @@
 			url.relative
 		);
 		document.title = title;
-		$.dynload_link.init();
+		$.Dill.init();
 	};
 
-	$.dynload_link.gotoAnchor = function (anchor) {
+	$.Dill.gotoAnchor = function (anchor) {
 		if (anchor == '')
 			anchor = 0;
 		else {
@@ -161,35 +161,35 @@
 			page.animate({ scrollTop: anchor }, 'fast');
 	};
 
-	$.dynload_link.all = function () {
-		$('a[target!=_blank]').each($.dynload_link.applyTo);
+	$.Dill.all = function () {
+		$('a[target!=_blank]').each($.Dill.applyTo);
 	};
 
-	$.dynload_link.pageChange_run = function () {
-		var len = $.dynload_link.pageChange_funcs.length;
+	$.Dill.pageChange_run = function () {
+		var len = $.Dill.pageChange_funcs.length;
 		for (var i = 0; i < len; i++) {
-			$.dynload_link.pageChange_funcs[i]();
+			$.Dill.pageChange_funcs[i]();
 		}
 	};
-	$.dynload_link.pageChange_funcs = [];
-	$.dynload_link.pageChange = function (func) {
-		$.dynload_link.pageChange_funcs.push(func);
+	$.Dill.pageChange_funcs = [];
+	$.Dill.pageChange = function (func) {
+		$.Dill.pageChange_funcs.push(func);
 	};
 
-	$(document).ready($.dynload_link.init);
+	$(document).ready($.Dill.init);
 
 	$(window).bind('popstate', function (e) {
-		if ($.browser.webkit && !$.dynload_link.init_pop) {
-			$.dynload_link.init_pop = true;
+		if ($.browser.webkit && !$.Dill.init_pop) {
+			$.Dill.init_pop = true;
 			return;
 		}
 
 		var state = e.originalEvent.state;
-		if (!state) state = $.dynload_link.initialState;
-		if (state.url.full != $.dynload_link.current_url.full) {
+		if (!state) state = $.Dill.initialState;
+		if (state.url.full != $.Dill.current_url.full) {
 			document.title = state.title;
-			$.dynload_link.init();
-			$.dynload_link.applyData(state.url);
+			$.Dill.init();
+			$.Dill.applyData(state.url);
 		}
 	});
 })( jQuery );
