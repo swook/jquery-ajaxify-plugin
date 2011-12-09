@@ -70,15 +70,15 @@
 		return uri;
 	};
 
-	$.dynload_link.applyTo = function (elem) {
-		var events = $.data(elem.get(0), 'events');
-		if (events && !elem.data('url') && events.click) return;
-		elem.unbind('click');
+	$.dynload_link.applyTo = function () {
+		var events = $.data($(this).get(0), 'events');
+		if (events && !$(this).data('url') && events.click) return;
+		$(this).unbind('click');
 
-		var url = $.dynload_link.parseUri(elem.attr('href'));
+		var url = $.dynload_link.parseUri($(this).attr('href'));
 		if (url.host != $.dynload_link.current_url.host) return;
-		elem.data('url', url);
-		elem.click(function(e) {
+		$(this).data('url', url);
+		$(this).click(function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
 				return;
 
@@ -162,9 +162,7 @@
 	};
 
 	$.dynload_link.all = function () {
-		$('a[target!=_blank]').each( function() {
-			$.dynload_link.applyTo($(this));
-		});
+		$('a[target!=_blank]').each($.dynload_link.applyTo);
 	};
 
 	$.dynload_link.pageChange_run = function () {
