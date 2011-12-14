@@ -89,7 +89,10 @@
 
 	$.Ajaxify.loadURL = function (url) {
 		if (typeof url == 'string') url = $.Ajaxify.parseUri(url);
-		if (url.host != $.Ajaxify.current_url.host) return;
+		if (url.host != $.Ajaxify.current_url.host) {
+			document.location.href = url.full;
+			return;
+		}
 		if ($.Ajaxify.current_url.full == url.full) {
 			$.Ajaxify.gotoAnchor(url.anchor);
 			return;
