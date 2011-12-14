@@ -165,7 +165,7 @@
 	};
 
 	$.Ajaxify.all = function () {
-		$('a[target!=_blank]').each($.Ajaxify.applyTo);
+		$('a[target!=_blank]:not(.noajax)').each($.Ajaxify.applyTo);
 	};
 
 	$.Ajaxify.pageChange_run = function () {
