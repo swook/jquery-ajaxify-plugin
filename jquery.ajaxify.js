@@ -88,6 +88,7 @@
 	};
 
 	$.Ajaxify.loadURL = function (url) {
+		if (typeof url == 'string') url = $.Ajaxify.parseUri(url);
 		if (url.host != $.Ajaxify.current_url.host) return;
 		if ($.Ajaxify.current_url.full == url.full) {
 			$.Ajaxify.gotoAnchor(url.anchor);
@@ -98,7 +99,9 @@
 			$.Ajaxify.page_cache[url.full] = data;
 			$.Ajaxify.updateHistory(url);
 			$.Ajaxify.applyData(url);
-		}, 'html');
+		}, 'html').error(function() {
+			document.location.href = url.full;
+		});
 	};
 
 	$.Ajaxify.applyData = function (url) {
