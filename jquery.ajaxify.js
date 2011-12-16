@@ -1,4 +1,4 @@
-/*
+/*!
    jQuery Ajaxify Plugin
    --------------------------------------
    > This jQuery plugin allows reloadless surfing within a website.
@@ -98,10 +98,25 @@
 			return;
 		}
 
+		// Cache then change all cursors to 'progress'
+		var body = $('body'), all = $('a');
+		body.css('cursor', 'progress');
+		all.each(function(i, elem) {
+			var $elem = $(elem);
+			$elem.data('cursor_cache', $elem.css('cursor'));
+			$elem.css('cursor', 'progress');
+		});
+
 		$.get(url.full, function(data) {
 			$.Ajaxify.page_cache[url.full] = data;
 			$.Ajaxify.updateHistory(url);
 			$.Ajaxify.applyData(url);
+			body.css('cursor', 'auto');
+			all.each(function(i, elem) {
+				var $elem = $(elem), cache = $elem.data('cursor_cache');
+				console.log(cache);
+				$elem.css('cursor', (cache) ? cache : 'auto' );
+			});
 		}, 'html').error(function() {
 			document.location.href = url.full;
 		});
