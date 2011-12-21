@@ -71,6 +71,7 @@
 	};
 
 	$.Ajaxify.applyTo = function () {
+		if ($.support.ajax) return;
 		var events = $.data($(this).get(0), 'events');
 		if (events && !$(this).data('url') && events.click) return;
 		$(this).unbind('click');
@@ -114,7 +115,6 @@
 			body.css('cursor', 'auto');
 			all.each(function(i, elem) {
 				var $elem = $(elem), cache = $elem.data('cursor_cache');
-				console.log(cache);
 				$elem.css('cursor', (cache) ? cache : 'auto' );
 			});
 		}, 'html').error(function() {
