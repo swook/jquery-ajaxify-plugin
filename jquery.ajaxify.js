@@ -71,7 +71,7 @@
 	};
 
 	$.Ajaxify.applyTo = function () {
-		if (!$.support.ajax) return;
+		if (!$.support.ajax || !window.history) return;
 		var events = $.data($(this).get(0), 'events');
 		if (events && !$(this).data('url') && events.click) return;
 		$(this).unbind('click');
