@@ -154,6 +154,7 @@
 	$.Ajaxify.updateHistory = function (url) {
 		var data = $.Ajaxify.page_cache[url.full];
 		var title  = data.match(/<title>(.*?)<\/title>/)[1];
+		document.title = title;
 		history.pushState(
 			{
 				url: url,
@@ -162,7 +163,6 @@
 			title,
 			url.relative
 		);
-		document.title = title;
 		$.Ajaxify.init();
 	};
 
