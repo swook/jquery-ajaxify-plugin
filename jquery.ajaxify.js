@@ -70,16 +70,17 @@
 		return uri;
 	};
 
-	$.Ajaxify.applyTo = function () {
+	$.Ajaxify.applyTo = function (elem) {
 		if (!$.support.ajax || !window.history) return;
-		var events = $.data($(this).get(0), 'events');
-		if (events && !$(this).data('url') && events.click) return;
-		$(this).unbind('click');
+		var $this = (elem instanceof jQuery) ? elem : $(this),
+			events = $.data($this.get(0), 'events');
+		if (events && !$this.data('url') && events.click) return;
+		$this.unbind('click');
 
-		var url = $.Ajaxify.parseUri($(this).attr('href'));
+		var url = $.Ajaxify.parseUri($this.attr('href'));
 		if (url.host != $.Ajaxify.current_url.host) return;
-		$(this).data('url', url);
-		$(this).click(function(e) {
+		$this.data('url', url);
+		$this.click(function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
 				return;
 
