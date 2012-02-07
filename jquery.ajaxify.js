@@ -75,12 +75,12 @@
 		var $this = (elem instanceof jQuery) ? elem : $(this),
 			events = $.data($this.get(0), 'events');
 		if (events && !$this.data('url') && events.click) return;
-		$this.unbind('click');
+		$this.off('click');
 
 		var url = $.Ajaxify.parseUri($this.attr('href'));
 		if (url.host != $.Ajaxify.current_url.host) return;
 		$this.data('url', url);
-		$this.click(function(e) {
+		$this.on('click', function(e) {
 			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
 				return;
 
@@ -200,7 +200,7 @@
 
 	$(document).ready($.Ajaxify.init);
 
-	$(window).bind('popstate', function (e) {
+	$(window).on('popstate', function (e) {
 		if ($.browser.webkit && !$.Ajaxify.init_pop) {
 			$.Ajaxify.init_pop = true;
 			return;
