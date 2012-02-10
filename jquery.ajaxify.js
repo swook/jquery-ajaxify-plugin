@@ -18,16 +18,17 @@
 		$.Ajaxify.initialState.title = document.title;
 		$.Ajaxify.page_cache[$.Ajaxify.current_url.full] = $('html').html();
 		$.Ajaxify.init_done = true;
-		$.Ajaxify.all();
 	};
 	$.Ajaxify.initialState = {};
 	$.Ajaxify.page_cache = {};
+	$.Ajaxify.url_cache = {};
 
 	// Modified function from:
 	//     http://blog.stevenlevithan.com/archives/parseuri
 	//
 	// License: MIT License <http://www.opensource.org/licenses/mit-license.php>
 	$.Ajaxify.parseUri = function (str) {
+		if ($.Ajaxify.url_cache[str]) return $.Ajaxify.url_cache[str];
 		var o = {
 			strictMode: false,
 			key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
@@ -67,6 +68,7 @@
 					((uri.query == '') ? '' : '?'+uri.query);
 		uri.full_anchor = uri.full;
 		if ( uri.anchor > '' ) uri.full_anchor += '#'+uri.anchor;
+		$.Ajaxify.url_cache[str] = uri;
 		return uri;
 	};
 
