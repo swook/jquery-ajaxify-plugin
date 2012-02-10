@@ -28,7 +28,9 @@
 	//
 	// License: MIT License <http://www.opensource.org/licenses/mit-license.php>
 	$.Ajaxify.parseUri = function (str) {
-		if ($.Ajaxify.url_cache[str]) return $.Ajaxify.url_cache[str];
+		if ((str.indexOf('://') != -1 || str[0] == '/') && str[0] != '#' && $.Ajaxify.url_cache[str])
+			return $.Ajaxify.url_cache[str];
+
 		var o = {
 			strictMode: false,
 			key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
