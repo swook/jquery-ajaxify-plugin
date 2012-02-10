@@ -79,7 +79,7 @@
 		if (!$.support.ajax || !window.history) return;
 		var $this = (elem instanceof jQuery) ? elem : $(this),
 			events = $.data($this.get(0), 'events');
-		$this.off('click');
+		$this.unbind('click');
 
 		var url = $.Ajaxify.parseUri($this.attr('href'));
 		if (!url || url.host != $.Ajaxify.current_url.host) return;
