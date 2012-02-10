@@ -28,6 +28,7 @@
 	//
 	// License: MIT License <http://www.opensource.org/licenses/mit-license.php>
 	$.Ajaxify.parseUri = function (str) {
+		if (!str || str == '') return
 		if ((str.indexOf('://') != -1 || str[0] == '/') && str[0] != '#' && $.Ajaxify.url_cache[str])
 			return $.Ajaxify.url_cache[str];
 
@@ -78,23 +79,25 @@
 		if (!$.support.ajax || !window.history) return;
 		var $this = (elem instanceof jQuery) ? elem : $(this),
 			events = $.data($this.get(0), 'events');
-		if (events && !$this.data('url') && events.click) return;
 		$this.off('click');
 
 		var url = $.Ajaxify.parseUri($this.attr('href'));
-		if (url.host != $.Ajaxify.current_url.host) return;
-		$this.data('url', url);
-		$this.on('click', function(e) {
-			if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
-				return;
+		if (!url || url.host != $.Ajaxify.current_url.host) return;
+		$this.on('click', $.Ajaxify.onClick);
+	};
 
-			e.preventDefault();
-			$.Ajaxify.loadURL($(this).data('url'));
-		});
+	$.Ajaxify.onClick = function(e) {
+		if (($.browser.msie && e.button != 1) || (!$.browser.msie && e.button != 0) || (e.ctrlKey))
+			return;
+
+		e.preventDefault();
+		var url = $.Ajaxify.parseUri($(this).attr('href'));
+		$.Ajaxify.loadURL(url);
 	};
 
 	$.Ajaxify.loadURL = function (url) {
 		if (typeof url == 'string') url = $.Ajaxify.parseUri(url);
+		if (!url) return;
 		if (url.host != $.Ajaxify.current_url.host) {
 			document.location.href = url.full;
 			return;
