@@ -121,7 +121,9 @@
 			all.each(function(i, elem) {
 				var $elem = $(elem), cache = $elem.data('cursor_cache');
 				$elem.css('cursor', (cache) ? cache : 'auto' );
+				$elem.removeData('cursor_cache')
 			});
+			data = null;
 		}, 'html').error(function() {
 			document.location.href = url.full;
 		});
