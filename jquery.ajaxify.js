@@ -16,11 +16,9 @@
 
 		$.Ajaxify.initialState.url = $.Ajaxify.current_url;
 		$.Ajaxify.initialState.title = document.title;
-		$.Ajaxify.page_cache[$.Ajaxify.current_url.full] = $('html').html();
 		$.Ajaxify.init_done = true;
 	};
 	$.Ajaxify.initialState = {};
-	$.Ajaxify.page_cache = {};
 	$.Ajaxify.url_cache = {};
 
 	// Modified function from:
@@ -77,13 +75,13 @@
 
 	$.Ajaxify.applyTo = function (elem) {
 		if (!$.support.ajax || !window.history) return;
-		var $this = (elem instanceof jQuery) ? elem : $(this),
-			events = $.data($this.get(0), 'events');
-		$this.unbind('click');
+		var $this = (elem instanceof jQuery) ? elem : $(this);
 
 		var url = $.Ajaxify.parseUri($this.attr('href'));
 		if (!url || url.host != $.Ajaxify.current_url.host) return;
+		$this.unbind('click');
 		$this.on('click', $.Ajaxify.onClick);
+		$this = null, url = null;
 	};
 
 	$.Ajaxify.onClick = function(e) {
@@ -117,9 +115,8 @@
 		});
 
 		$.get(url.full, function(data) {
-			$.Ajaxify.page_cache[url.full] = data;
-			$.Ajaxify.updateHistory(url);
-			$.Ajaxify.applyData(url);
+			$.Ajaxify.updateHistory(url, data);
+			$.Ajaxify.applyData(url, data);
 			body.css('cursor', 'auto');
 			all.each(function(i, elem) {
 				var $elem = $(elem), cache = $elem.data('cursor_cache');
@@ -130,12 +127,11 @@
 		});
 	};
 
-	$.Ajaxify.applyData = function (url) {
-		var data = $.Ajaxify.page_cache[url.full];
+	$.Ajaxify.applyData = function (url, data) {
 		if (!data) {
-			$.get(url.full, function(data) {
-				$.Ajaxify.page_cache[url.full] = data;
-				$.Ajaxify.applyData(url);
+			$.get(url.full, function(reply) {
+				data = reply;
+				$.Ajaxify.applyData(url, data);
 			}, 'html');
 			return;
 		}
@@ -151,6 +147,7 @@
 				cont.replaceWith(newdata);
 				cont.height(cont.height());
 				cont.height('auto');
+				$(cont, 'a[target!=_blank]:not(.noajax)').each($.Ajaxify.applyTo);
 			}
 		}
 		$.Ajaxify.all();
@@ -158,8 +155,7 @@
 		$.Ajaxify.gotoAnchor(url.anchor);
 	};
 
-	$.Ajaxify.updateHistory = function (url) {
-		var data = $.Ajaxify.page_cache[url.full];
+	$.Ajaxify.updateHistory = function (url, data) {
 		var title  = data.match(/<title>(.*?)<\/title>/)[1];
 		document.title = title;
 		history.pushState(
