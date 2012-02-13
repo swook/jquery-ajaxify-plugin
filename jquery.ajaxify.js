@@ -137,8 +137,10 @@
 			}, 'html');
 			return;
 		}
-		if (!$.Ajaxify.container)
+		if (!$.Ajaxify.container) {
+			$('html').empty();
 			$('html').html(data);
+		}
 		else {
 			if (typeof $.Ajaxify.container == 'string')
 				$.Ajaxify.container = [$.Ajaxify.container];
