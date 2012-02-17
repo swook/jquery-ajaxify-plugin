@@ -205,8 +205,6 @@
 		$.Ajaxify.pageChange_funcs.push(func);
 	};
 
-	$(document).ready($.Ajaxify.init);
-
 	$(window).on('popstate', function (e) {
 		if ($.browser.webkit && !$.Ajaxify.init_pop) {
 			$.Ajaxify.init_pop = true;
@@ -221,4 +219,6 @@
 			$.Ajaxify.applyData(state.url);
 		}
 	});
+
+	$.Ajaxify.init();
 })( jQuery );
